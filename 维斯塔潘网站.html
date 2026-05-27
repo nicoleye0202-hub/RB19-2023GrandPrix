@@ -1,0 +1,1176 @@
+```html
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>ORACLE RED BULL RACING - RB19 Champion Experience</title>
+    <!-- Tailwind CSS -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <!-- Lucide Icons -->
+    <script src="https://unpkg.com/lucide@latest"></script>
+    <!-- Google Fonts -->
+    <link href="https://fonts.googleapis.com/css2?family=Barlow+Condensed:ital,wght@0,300;0,600;0,800;1,700&family=Oswald:wght@400;600;700&family=Space+Grotesk:wght@400;700&display=swap" rel="stylesheet">
+    
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    colors: {
+                        rbrNavy: '#050B14',
+                        rbrBlue: '#0A1428',
+                        rbrLightBlue: '#122544',
+                        rbrYellow: '#FFEC00',
+                        rbrRed: '#E10600',
+                        rbrGray: '#94A3B8',
+                        vegasPurple: '#6d28d9',
+                        miamiTeal: '#00f2fe',
+                        miamiPink: '#f35588'
+                    },
+                    fontFamily: {
+                        sans: ['Barlow Condensed', 'sans-serif'],
+                        oswald: ['Oswald', 'sans-serif'],
+                        space: ['Space Grotesk', 'sans-serif']
+                    }
+                }
+            }
+        }
+    </script>
+    <style>
+        body {
+            background-color: #050B14;
+            color: #ffffff;
+            overflow-x: hidden;
+        }
+        /* 炫酷的流动霓虹边框 */
+        .neon-border {
+            position: relative;
+            border: 1px solid rgba(255, 236, 0, 0.2);
+            box-shadow: 0 0 20px rgba(0, 0, 0, 0.5);
+            transition: all 0.5s ease;
+        }
+        /* 配合海报氛围的紫红雾霾背景效果 */
+        .poster-glow {
+            background: radial-gradient(circle at 50% 50%, rgba(109, 40, 217, 0.25) 0%, rgba(225, 6, 0, 0.1) 50%, transparent 100%);
+        }
+        /* 极速模糊滤镜 */
+        .blur-motion {
+            filter: blur(40px);
+            mix-blend-mode: screen;
+        }
+        /* 自定义滚动条 */
+        ::-webkit-scrollbar {
+            width: 8px;
+        }
+        ::-webkit-scrollbar-track {
+            background: #050B14;
+        }
+        ::-webkit-scrollbar-thumb {
+            background: #122544;
+            border-radius: 4px;
+        }
+        ::-webkit-scrollbar-thumb:hover {
+            background: #FFEC00;
+        }
+    </style>
+</head>
+<body class="font-sans antialiased selection:bg-rbrYellow selection:text-rbrNavy relative">
+
+    <!-- 粒子运动 Canvas 背景层 -->
+    <canvas id="ambient-particles" class="fixed inset-0 pointer-events-none z-0 opacity-80"></canvas>
+
+    <!-- 顶端流光渐变雾气 -->
+    <div class="absolute top-0 left-1/4 w-96 h-96 bg-rbrRed/15 rounded-full blur-motion pointer-events-none z-0"></div>
+    <div class="absolute top-1/4 right-1/4 w-[500px] h-[500px] bg-vegasPurple/20 rounded-full blur-motion pointer-events-none z-0"></div>
+
+    <!-- 导航栏 -->
+    <nav class="fixed top-0 left-0 w-full z-50 bg-rbrNavy/90 backdrop-blur-md border-b border-rbrLightBlue/40 px-6 py-4">
+        <div class="max-w-7xl mx-auto flex items-center justify-between">
+            <div class="flex items-center space-x-3">
+                <div class="flex items-center space-x-1">
+                    <span class="text-rbrRed font-oswald text-2xl font-extrabold tracking-tighter">RED BULL</span>
+                    <span class="bg-rbrYellow text-rbrNavy px-2 py-0.5 rounded text-sm font-oswald font-black">RB19</span>
+                </div>
+            </div>
+            
+            <div class="hidden md:flex space-x-8 text-sm uppercase tracking-widest font-semibold">
+                <a href="#home" class="hover:text-rbrYellow transition duration-300" data-lang-en="Overview" data-lang-zh="车队概览">Overview</a>
+                <a href="#livery" class="hover:text-rbrYellow transition duration-300" data-lang-en="Liveries" data-lang-zh="传奇涂装">Liveries</a>
+                <a href="#telemetry" class="hover:text-rbrYellow transition duration-300" data-lang-en="Telemetry & Track" data-lang-zh="赛道瞬态数据">Telemetry & Track</a>
+                <a href="#pitstop" class="hover:text-rbrYellow transition duration-300" data-lang-en="Pit Challenge" data-lang-zh="换胎挑战">Pit Challenge</a>
+                <a href="#driver" class="hover:text-rbrYellow transition duration-300" data-lang-en="Verstappen" data-lang-zh="车手荣誉">Verstappen</a>
+            </div>
+
+            <div class="flex items-center space-x-4">
+                <!-- 语种切换按钮 -->
+                <button onclick="toggleLanguage()" class="border border-rbrYellow/30 hover:border-rbrYellow text-rbrYellow px-3 py-1 rounded text-xs font-bold tracking-wider font-space uppercase transition">
+                    <span id="lang-indicator">ZH</span>
+                </button>
+                <a href="#livery" class="bg-rbrRed text-white px-4 py-2 rounded-sm font-bold text-sm tracking-wide uppercase hover:bg-white hover:text-rbrNavy transition-all duration-300 hidden sm:inline-flex items-center space-x-2">
+                    <span data-lang-en="Chassis Suite" data-lang-zh="探索战车">Chassis Suite</span>
+                    <i data-lucide="chevron-right" class="w-4 h-4"></i>
+                </a>
+            </div>
+        </div>
+    </nav>
+
+    <!-- 主展示区 (Hero Section) - 融入维斯塔潘真人海报结构 -->
+    <section id="home" class="relative min-h-screen pt-28 pb-12 flex items-center justify-center overflow-hidden">
+        <div class="max-w-7xl mx-auto px-6 w-full grid grid-cols-1 lg:grid-cols-12 gap-12 items-center relative z-10">
+            
+            <!-- 左侧内容区 -->
+            <div class="lg:col-span-5 space-y-6">
+                <div class="inline-flex items-center space-x-2 bg-rbrLightBlue/80 border border-rbrLightBlue text-rbrYellow px-3 py-1 rounded-full text-xs font-semibold tracking-wider uppercase font-space">
+                    <span class="w-2 h-2 rounded-full bg-rbrRed animate-ping"></span>
+                    <span data-lang-en="THE DOMINANT CHAMPION ERA" data-lang-zh="红牛绝对统治纪元">THE DOMINANT CHAMPION ERA</span>
+                </div>
+                <h1 class="text-6xl sm:text-7xl font-oswald font-black uppercase leading-none tracking-tight">
+                    RB19 <span class="text-transparent bg-clip-text bg-gradient-to-r from-rbrYellow via-white to-rbrYellow">LEGEND</span>
+                </h1>
+                <p class="text-rbrGray text-lg leading-relaxed max-w-xl" data-lang-en="Sculpted by Adrian Newey. Sweeping 21 victories out of 22 races in 2023, the RB19 represents the absolute peak of motorsport supremacy and aerodynamic flow control." data-lang-zh="由传奇设计大师纽维亲自执笔。在 2023 赛季的 22 分站中席卷了 21 场胜利，胜率高达恐怖的 95.45%，将空气动力学地效效应发挥到了极致。">
+                    Sculpted by Adrian Newey. Sweeping 21 victories out of 22 races in 2023, the RB19 represents the absolute peak of motorsport supremacy and aerodynamic flow control.
+                </p>
+
+                <!-- 战绩成就大屏 -->
+                <div class="grid grid-cols-3 gap-4 pt-6 border-t border-rbrLightBlue/50">
+                    <div>
+                        <div class="text-4xl font-oswald font-black text-rbrYellow">95.5%</div>
+                        <div class="text-xs text-rbrGray uppercase tracking-wider" data-lang-en="Win Ratio" data-lang-zh="分站胜率">Win Ratio</div>
+                    </div>
+                    <div>
+                        <div class="text-4xl font-oswald font-black text-white">860</div>
+                        <div class="text-xs text-rbrGray uppercase tracking-wider" data-lang-en="WCC Points" data-lang-zh="车队积分">WCC Points</div>
+                    </div>
+                    <div>
+                        <div class="text-4xl font-oswald font-black text-rbrRed">1,003</div>
+                        <div class="text-xs text-rbrGray uppercase tracking-wider" data-lang-en="Laps Led" data-lang-zh="领跑圈数">Laps Led</div>
+                    </div>
+                </div>
+
+                <div class="pt-6 flex flex-wrap gap-4">
+                    <a href="#livery" class="bg-rbrYellow text-rbrNavy font-bold px-8 py-3 rounded uppercase tracking-wider hover:bg-white transition-all duration-300" data-lang-en="Interactive Liveries" data-lang-zh="涂装互动展台">
+                        Interactive Liveries
+                    </a>
+                    <a href="#telemetry" class="border border-white/20 hover:border-rbrYellow px-8 py-3 rounded font-bold uppercase tracking-wider transition-all duration-300" data-lang-en="Live Telemetry" data-lang-zh="极速遥测数据">
+                        Live Telemetry
+                    </a>
+                </div>
+            </div>
+
+            <!-- 右侧：艺术化复刻维斯塔潘夺冠真人海报 -->
+            <div class="lg:col-span-7 relative flex items-center justify-center">
+                <!-- 紫色与红黄色雾霾海报背景效果 -->
+                <div class="absolute w-[110%] h-[110%] poster-glow rounded-full blur-motion pointer-events-none"></div>
+
+                <!-- 复合海报架框 -->
+                <div class="relative w-full max-w-lg bg-rbrNavy/60 border border-rbrLightBlue/80 p-5 rounded-3xl overflow-hidden shadow-2xl">
+                    <div class="absolute top-4 left-4 bg-rbrRed text-white px-2 py-0.5 rounded text-[10px] font-bold font-space uppercase tracking-widest">
+                        2023 WORLD CHAMPION TRIBUTE
+                    </div>
+
+                    <!-- 复杂的 SVG 矢量层：复刻头盔仰望、高举铁拳与疾驰赛车的三重交织海报 -->
+                    <svg viewBox="0 0 500 650" fill="none" class="w-full h-auto rounded-2xl drop-shadow-2xl">
+                        <!-- 海报天空背景 -->
+                        <rect width="500" height="650" rx="16" fill="#050B14" />
+                        
+                        <!-- 动态紫雾/红霞环境渐变 -->
+                        <defs>
+                            <radialGradient id="skyGrad" cx="50%" cy="50%" r="50%">
+                                <stop offset="0%" stop-color="#4c1d95" stop-opacity="0.6"/>
+                                <stop offset="60%" stop-color="#E10600" stop-opacity="0.2"/>
+                                <stop offset="100%" stop-color="#050B14" stop-opacity="0"/>
+                            </radialGradient>
+                            <linearGradient id="glowLine" x1="0%" y1="0%" x2="100%" y2="100%">
+                                <stop offset="0%" stop-color="#00f2fe" />
+                                <stop offset="50%" stop-color="#f35588" />
+                                <stop offset="100%" stop-color="#FFEC00" />
+                            </linearGradient>
+                        </defs>
+                        <rect width="500" height="650" fill="url(#skyGrad)" />
+
+                        <!-- 背景中的抽象荷兰狮子轮廓 -->
+                        <path d="M 50 250 Q 150 150 250 280 T 450 250" stroke="#FFEC00" stroke-width="1.5" stroke-dasharray="8 8" opacity="0.3" />
+
+                        <!-- ================== 1. 上方：赛车头盔 (SVG 绘制) ================== -->
+                        <g transform="translate(140, 40)" opacity="0.95">
+                            <path d="M 40 100 C 40 30, 180 30, 180 100 C 180 140, 170 170, 110 170 C 50 170, 40 140, 40 100 Z" fill="#122544" stroke="#FFEC00" stroke-width="4" />
+                            <path d="M 50 70 Q 110 35 170 70" fill="none" stroke="#E10600" stroke-width="3" />
+                            <path d="M 60 60 Q 110 25 160 60" fill="none" stroke="#FFEC00" stroke-width="1.5" />
+                            <rect x="75" y="42" width="70" height="12" rx="2" fill="#FFFFFF" />
+                            <text x="110" y="51" fill="#0A1428" font-family="Oswald" font-weight="black" font-size="8" text-anchor="middle">CarNext</text>
+                            
+                            <path d="M 46 95 L 174 95 L 165 125 L 55 125 Z" fill="#050B14" stroke="#00f2fe" stroke-width="2" />
+                            <path d="M 52 105 Q 110 95 160 105" stroke="url(#glowLine)" stroke-width="4" fill="none" />
+                            <circle cx="48" cy="110" r="5" fill="#FFEC00" />
+                            <circle cx="172" cy="110" r="5" fill="#FFEC00" />
+                        </g>
+
+                        <!-- ================== 2. 右侧上方：高举铁拳宣告胜利 ================== -->
+                        <g transform="translate(360, 120)" opacity="0.9">
+                            <path d="M 30 70 L 45 40 L 65 42 L 75 60 L 65 85 L 35 85 Z" fill="#122544" stroke="#FFFFFF" stroke-width="2" />
+                            <path d="M 30 70 C 20 60, 20 45, 35 40 C 45 35, 55 45, 50 55" stroke="#E10600" stroke-width="2" fill="none" />
+                            <path d="M 40 85 L 80 180 L 130 150 L 65 85 Z" fill="#0A1428" stroke="#FFFFFF" stroke-width="1" />
+                            <path d="M 55 110 L 95 165" stroke="#E10600" stroke-width="4" />
+                            <path d="M 62 105 L 102 160" stroke="#FFEC00" stroke-width="2" />
+                            <circle cx="53" cy="63" r="8" fill="#FFEC00" />
+                            <text x="53" y="67" fill="#0A1428" font-family="Oswald" font-weight="black" font-size="10" text-anchor="middle">1</text>
+                        </g>
+
+                        <!-- ================== 3. 躯干部分：赛车服 ================== -->
+                        <g transform="translate(60, 240)" opacity="0.9">
+                            <path d="M 40 200 L 120 40 Q 200 10 260 40 L 340 200 Z" fill="#0A1428" stroke="#122544" stroke-width="2" />
+                            <line x1="190" y1="40" x2="190" y2="200" stroke="#FFEC00" stroke-width="2" />
+                            <path d="M 110 100 Q 190 70 270 100" stroke="#E10600" stroke-width="4" fill="none" />
+                            <text x="190" y="130" fill="#FFFFFF" font-family="Oswald" font-weight="black" font-size="28" text-anchor="middle" letter-spacing="2">ORACLE</text>
+                            <circle cx="190" y="165" r="14" fill="#FFEC00" />
+                            <path d="M 175 168 Q 190 155 205 168" stroke="#E10600" stroke-width="3.5" fill="none" />
+                        </g>
+
+                        <!-- ================== 4. 底部：赛车 ================== -->
+                        <g transform="translate(10, 420)">
+                            <path d="M 0 160 L 150 120 L 330 120 L 480 160 Z" fill="url(#skyGrad)" opacity="0.9" />
+                            <path d="M 20 180 Q 240 130 460 180" stroke="#4c1d95" stroke-width="20" stroke-linecap="round" opacity="0.6" />
+                            <path d="M 10 210 Q 240 145 470 210" stroke="#E10600" stroke-width="6" stroke-dasharray="25 15" />
+                            
+                            <rect x="50" y="125" width="45" height="40" rx="5" fill="#111827" stroke="#374151" stroke-width="2" />
+                            <circle cx="72" cy="145" r="14" fill="#050B14" />
+                            <circle cx="72" cy="145" r="18" stroke="#E10600" stroke-width="2.5" fill="none" />
+                            
+                            <path d="M 90 145 L 160 115 L 290 115 L 360 135 L 420 155 L 90 155 Z" fill="#0C1E3E" stroke="#122544" stroke-width="2" />
+                            <text x="240" y="145" fill="#FFEC00" font-family="Oswald" font-size="18" font-weight="black" font-style="italic">Red Bull</text>
+                            
+                            <rect x="380" y="138" width="40" height="35" rx="4" fill="#111827" stroke="#374151" stroke-width="2" />
+                            <circle cx="400" cy="155" r="12" fill="#050B14" />
+                            <circle cx="400" cy="155" r="15" stroke="#E10600" stroke-width="2" fill="none" />
+
+                            <path d="M 370 150 L 450 150 L 460 162 L 360 162 Z" fill="#0A1428" />
+                            <rect x="445" y="142" width="10" height="15" fill="#E10600" />
+                            
+                            <path d="M 180 130 Q 260 120 330 135" stroke="#E10600" stroke-width="4" fill="none" />
+                        </g>
+
+                        <line x1="50" y1="20" x2="450" y2="20" stroke="url(#glowLine)" stroke-width="2" />
+                        <line x1="50" y1="630" x2="450" y2="630" stroke="url(#glowLine)" stroke-width="2" />
+                    </svg>
+
+                    <!-- 海报底座标注 -->
+                    <div class="mt-4 flex justify-between items-center bg-rbrBlue/80 p-3 rounded-xl border border-rbrLightBlue/40">
+                        <div class="flex items-center space-x-2">
+                            <span class="w-2.5 h-2.5 rounded-full bg-rbrYellow animate-ping"></span>
+                            <span class="text-xs font-bold text-white uppercase tracking-wider" data-lang-en="Double Exposure Champion Poster" data-lang-zh="双重曝光车手海报">Double Exposure Champion Poster</span>
+                        </div>
+                        <span class="text-[10px] text-rbrGray font-mono">1.82s World Class Pitstop Team</span>
+                    </div>
+                </div>
+
+            </div>
+        </div>
+    </section>
+
+    <!-- 赛车涂装全景切换 (Car Livery Section) -->
+    <section id="livery" class="py-24 bg-rbrBlue border-y border-rbrLightBlue/40 relative">
+        <div class="max-w-7xl mx-auto px-6">
+            <div class="text-center max-w-3xl mx-auto mb-16">
+                <span class="text-rbrYellow uppercase font-bold tracking-widest text-sm" data-lang-en="SPECIAL CHAMPIONSHIP LIVERIES" data-lang-zh="大奖赛限定涂装特辑">SPECIAL CHAMPIONSHIP LIVERIES</span>
+                <h2 class="text-4xl sm:text-5xl font-oswald font-black uppercase tracking-tight text-white mt-1" data-lang-en="CHOOSE YOUR RB19 STYLE" data-lang-zh="选择您的战车涂装风格">
+                    CHOOSE YOUR RB19 STYLE
+                </h2>
+                <p class="text-rbrGray mt-4" data-lang-en="Step into our simulator and trigger real-life special liveries. Observe how the design flows across the carbon chassis." data-lang-zh="点击下方不同版本的赛车，在 2023 经典款、传奇白色致敬款、迈阿密霓虹款、维加斯暗夜款中任意切换。观察车身、前后翼的实时动态配色渲染！">
+                    Step into our simulator and trigger real-life special liveries. Observe how the design flows across the carbon chassis.
+                </p>
+            </div>
+
+            <div class="grid grid-cols-1 lg:grid-cols-12 gap-8 items-stretch">
+                <!-- 涂装控制选项卡 -->
+                <div class="lg:col-span-4 flex flex-col justify-between space-y-4">
+                    <div class="space-y-3">
+                        <!-- 按钮 1: 经典 -->
+                        <button onclick="switchLivery('classic')" id="btn-classic" class="w-full text-left p-4 rounded-xl border border-rbrYellow bg-rbrNavy/80 transition-all duration-300 group flex items-center justify-between">
+                            <div>
+                                <h4 class="font-bold text-lg text-white group-hover:text-rbrYellow transition" data-lang-en="Standard Matte Navy" data-lang-zh="经典哑光藏蓝">Standard Matte Navy</h4>
+                                <p class="text-xs text-rbrGray" data-lang-en="The champion seasonal look" data-lang-zh="征战2023的常规主力色调">The champion seasonal look</p>
+                            </div>
+                            <div class="w-6 h-6 rounded-full bg-[#0C1E3E] border-2 border-rbrYellow flex items-center justify-center">
+                                <div class="w-3 h-3 rounded-full bg-rbrYellow"></div>
+                            </div>
+                        </button>
+
+                        <!-- 按钮 2: 白色传奇致敬 (Image 1) -->
+                        <button onclick="switchLivery('white')" id="btn-white" class="w-full text-left p-4 rounded-xl border border-rbrLightBlue hover:border-white/50 bg-rbrNavy/40 transition-all duration-300 group flex items-center justify-between">
+                            <div>
+                                <h4 class="font-bold text-lg text-white group-hover:text-white transition" data-lang-en="White 'Arigato' Tribute" data-lang-zh="传奇白色'谢谢'致敬款">White 'Arigato' Tribute</h4>
+                                <p class="text-xs text-rbrGray" data-lang-en="White chassis & Red bull (Image 1)" data-lang-zh="完美复刻白红相间的本田经典传奇(图1)">White chassis & Red bull (Image 1)</p>
+                            </div>
+                            <div class="w-6 h-6 rounded-full bg-white/20 border border-white"></div>
+                        </button>
+
+                        <!-- 按钮 3: 迈阿密粉蓝 (Image 2) -->
+                        <button onclick="switchLivery('miami')" id="btn-miami" class="w-full text-left p-4 rounded-xl border border-rbrLightBlue hover:border-miamiTeal/50 bg-rbrNavy/40 transition-all duration-300 group flex items-center justify-between">
+                            <div>
+                                <h4 class="font-bold text-lg text-white group-hover:text-miamiTeal transition" data-lang-en="Miami Neon Swoops" data-lang-zh="迈阿密海岸霓虹粉蓝">Miami Neon Swoops</h4>
+                                <p class="text-xs text-rbrGray" data-lang-en="Vibrant teal & pink (Image 2)" data-lang-zh="侧箱狂野霓虹流动饰线(图2)">Vibrant teal & pink (Image 2)</p>
+                            </div>
+                            <div class="w-6 h-6 rounded-full bg-miamiTeal/20 border border-miamiTeal"></div>
+                        </button>
+
+                        <!-- 按钮 4: 拉斯维加斯扑克筹码 (Image 3) -->
+                        <button onclick="switchLivery('vegas')" id="btn-vegas" class="w-full text-left p-4 rounded-xl border border-rbrLightBlue hover:border-purple-500/50 bg-rbrNavy/40 transition-all duration-300 group flex items-center justify-between">
+                            <div>
+                                <h4 class="font-bold text-lg text-white group-hover:text-purple-400 transition" data-lang-en="Las Vegas Poker Night" data-lang-zh="拉斯维加斯不夜城紫">Las Vegas Poker Night</h4>
+                                <p class="text-xs text-rbrGray" data-lang-en="Deep violet card suits (Image 3)" data-lang-zh="幽紫底盘带红心黑桃扑克涂装(图3)">Deep violet card suits (Image 3)</p>
+                            </div>
+                            <div class="w-6 h-6 rounded-full bg-purple-500/20 border border-purple-500"></div>
+                        </button>
+                    </div>
+
+                    <!-- 涂装技术细节 -->
+                    <div class="p-5 bg-rbrNavy border border-rbrLightBlue rounded-xl">
+                        <div class="flex items-center space-x-2 text-rbrYellow mb-2">
+                            <i data-lucide="shield" class="w-4 h-4"></i>
+                            <span class="text-xs uppercase tracking-wider font-bold" data-lang-en="Carbon Skin Engineering" data-lang-zh="碳纤维轻量漆工艺">Carbon Skin Engineering</span>
+                        </div>
+                        <p class="text-xs text-rbrGray leading-relaxed" data-lang-en="To save weight, the special liveries use high-tech 3D vinyl micro-sheets, adding zero aerodynamic drag or excessive weight penalties." data-lang-zh="为了保证赛车不超过798kg重限制，大奖赛特别限定涂装均采用高科技超薄3D贴纸，在完全不牺牲空气动力学附面层的情况下展现非凡艺术。">
+                            To save weight, the special liveries use high-tech 3D vinyl micro-sheets, adding zero aerodynamic drag or excessive weight penalties.
+                        </p>
+                    </div>
+                </div>
+
+                <!-- 战车全景 3D/SVG 渲染与细节解密 -->
+                <div class="lg:col-span-8 bg-rbrNavy border border-rbrLightBlue rounded-2xl p-6 flex flex-col justify-between relative overflow-hidden">
+                    <div id="livery-glow-bg" class="absolute -right-24 -bottom-24 w-96 h-96 rounded-full bg-rbrYellow/10 blur-3xl pointer-events-none transition-all duration-700"></div>
+
+                    <div>
+                        <div class="flex justify-between items-start">
+                            <div>
+                                <span class="text-rbrRed uppercase font-bold tracking-widest text-xs" id="livery-tag">STANDARD SPEC</span>
+                                <h3 class="text-3xl font-oswald font-bold mt-1" id="livery-title">Matte Night Navy & Bull Yellow</h3>
+                            </div>
+                            <!-- 调色板指示器 -->
+                            <div class="flex space-x-2" id="livery-color-palette">
+                                <span class="w-6 h-6 rounded-full border border-white/20 bg-[#0C1E3E]"></span>
+                                <span class="w-6 h-6 rounded-full border border-white/20 bg-[#FFEC00]"></span>
+                                <span class="w-6 h-6 rounded-full border border-white/20 bg-[#E10600]"></span>
+                            </div>
+                        </div>
+
+                        <p class="text-rbrGray mt-4 text-sm leading-relaxed max-w-2xl" id="livery-desc">
+                            The classic dark navy matte carbon shell. Perfect anti-glare reflection matching high-intensity street track panelling and paddock night lights.
+                        </p>
+                    </div>
+
+                    <!-- 实时矢量渲染器 -->
+                    <div class="my-10 relative flex flex-col items-center justify-center">
+                        <div class="absolute inset-0 flex items-center justify-center opacity-5">
+                            <span class="text-[14rem] font-oswald font-black select-none tracking-tighter" id="giant-bg-text">CLASSIC</span>
+                        </div>
+                        
+                        <div id="car-preview-container" class="w-full max-w-2xl transition-all duration-500 transform hover:scale-[1.02]">
+                            <svg viewBox="0 0 700 200" fill="none" class="w-full h-auto drop-shadow-2xl">
+                                <circle cx="120" cy="130" r="48" fill="#111827" stroke="#374151" stroke-width="4"/>
+                                <circle id="svg-rear-rim" cx="120" cy="130" r="28" fill="#1e293b" stroke="#334155" stroke-width="2"/>
+                                <circle id="svg-rear-compound" cx="120" cy="130" r="38" stroke="#FFEC00" stroke-width="2.5" fill="none"/>
+                                <circle cx="120" cy="130" r="8" fill="#E10600" />
+
+                                <circle cx="560" cy="130" r="48" fill="#111827" stroke="#374151" stroke-width="4"/>
+                                <circle id="svg-front-rim" cx="560" cy="130" r="28" fill="#1e293b" stroke="#334155" stroke-width="2"/>
+                                <circle id="svg-front-compound" cx="560" cy="130" r="38" stroke="#FFEC00" stroke-width="2.5" fill="none"/>
+                                <circle cx="560" cy="130" r="8" fill="#E10600" />
+
+                                <path d="M120 148 L560 148 L540 154 L140 154 Z" fill="#090d16" />
+
+                                <path id="svg-body-shell" d="M140 135 L200 120 L270 95 L340 70 L420 85 L500 115 L580 130 L530 145 L140 145 Z" fill="#0C1E3E" class="transition-all duration-500" />
+                                
+                                <circle id="svg-engine-sun" cx="340" cy="95" r="22" fill="#FFEC00" class="transition-all duration-500" />
+                                <path id="svg-engine-bull" d="M320 98 Q340 85 360 98" stroke="#E10600" stroke-width="4" fill="none" class="transition-all duration-500" />
+
+                                <path id="svg-accent-swoosh" d="M220 125 Q280 100 370 105 L410 135 Z" fill="#E10600" class="transition-all duration-500" />
+                                <path id="svg-accent-swoosh-2" d="M240 132 Q300 115 390 118 L415 138 Z" fill="#FFEC00" class="transition-all duration-500" />
+
+                                <path d="M100 105 L130 65 L160 65 L140 105 Z" fill="#1F2937"/>
+                                <rect id="svg-rear-wing-main" x="80" y="55" width="55" height="30" rx="3" fill="#E10600" class="transition-all duration-500" />
+                                <text id="svg-rear-wing-text" x="107" y="75" fill="#ffffff" font-family="Oswald" font-size="11" font-weight="black" text-anchor="middle">HONDA</text>
+
+                                <path id="svg-front-wing-main" d="M540 135 L610 135 L600 115 L530 122 Z" fill="#0A1428" class="transition-all duration-500" />
+                                <rect id="svg-front-wing-tip" x="590" y="115" width="18" height="20" rx="1" fill="#E10600" class="transition-all duration-500" />
+
+                                <path d="M380 90 Q405 65 440 92 L410 100 Z" fill="#020617"/>
+                                <circle cx="400" cy="94" r="8" fill="#ffffff" />
+                            </svg>
+                        </div>
+                        
+                        <!-- 实车照片对比标签 -->
+                        <div class="mt-4 flex items-center space-x-2 text-xs bg-rbrBlue/50 px-4 py-2 rounded-lg border border-rbrLightBlue/40">
+                            <i data-lucide="sparkles" class="w-4 h-4 text-rbrYellow"></i>
+                            <span class="text-rbrGray" id="prototype-comparison-label">Classic 2023 Race Configuration</span>
+                        </div>
+                    </div>
+
+                    <!-- 涂装细节表 -->
+                    <div class="border-t border-rbrLightBlue/40 pt-4 grid grid-cols-2 md:grid-cols-4 gap-4 text-center">
+                        <div class="bg-rbrBlue/50 p-2 rounded">
+                            <span class="text-xs text-rbrGray block" data-lang-en="Aerodynamic Class" data-lang-zh="气动级别">Aerodynamic Class</span>
+                            <span class="font-bold text-sm text-white" id="livery-spec-type">Low Drag Stance</span>
+                        </div>
+                        <div class="bg-rbrBlue/50 p-2 rounded">
+                            <span class="text-xs text-rbrGray block" data-lang-en="First Track Debut" data-lang-zh="大奖赛首发地">First Track Debut</span>
+                            <span class="font-bold text-sm text-white" id="livery-spec-debut">Pre-Season Testing</span>
+                        </div>
+                        <div class="bg-rbrBlue/50 p-2 rounded">
+                            <span class="text-xs text-rbrGray block" data-lang-en="Victory Record" data-lang-zh="本期斩获分站冠">Victory Record</span>
+                            <span class="font-bold text-sm text-white" id="livery-spec-wins">19 Wins</span>
+                        </div>
+                        <div class="bg-rbrBlue/50 p-2 rounded">
+                            <span class="text-xs text-rbrGray block" data-lang-en="Estimated Weight" data-lang-zh="贴纸耗重">Estimated Weight</span>
+                            <span class="font-bold text-sm text-white" id="livery-spec-points">0g Matte</span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- 赛道瞬态数据与策略中心 (Telemetry Section) -->
+    <section id="telemetry" class="py-24 bg-gradient-to-b from-rbrBlue to-rbrNavy relative border-b border-rbrLightBlue/40">
+        <div class="max-w-7xl mx-auto px-6">
+            <div class="text-center max-w-3xl mx-auto mb-16">
+                <span class="text-rbrYellow uppercase font-bold tracking-widest text-sm" data-lang-en="TELEMETRY & STRATEGY DATABASE" data-lang-zh="大奖赛遥测与策略数据库">TELEMETRY & STRATEGY DATABASE</span>
+                <h2 class="text-4xl sm:text-5xl font-oswald font-black uppercase tracking-tight text-white mt-1" data-lang-en="REAL-TIME TELEMETRY TRACER" data-lang-zh="极限分站赛道遥测">
+                    REAL-TIME TELEMETRY TRACER
+                </h2>
+                <p class="text-rbrGray mt-4" data-lang-en="Select iconic GP venues below. See how the engine mapping, aero downforce, and tire strategies react instantly to corners." data-lang-zh="探究 RB19 在不同赛道特质下的终极气动设定。切换分站可以查看特定的发动机图谱曲线、极速遥测表现与一、二贵换胎策略！">
+                    Select iconic GP venues below. See how the engine mapping, aero downforce, and tire strategies react instantly to corners.
+                </p>
+            </div>
+
+            <!-- 分站快速切换 -->
+            <div class="grid grid-cols-1 sm:grid-cols-3 gap-4 mb-8">
+                <!-- 斯帕 -->
+                <button onclick="switchRace('spa')" id="race-tab-spa" class="p-5 rounded-2xl border border-rbrYellow bg-rbrBlue text-left transition-all duration-300">
+                    <div class="flex justify-between items-center mb-2">
+                        <span class="bg-rbrYellow text-rbrNavy px-2 py-0.5 rounded text-[10px] font-bold font-space">ROUND 12</span>
+                        <span class="text-xs text-green-400 font-bold" data-lang-en="High-Speed Edge" data-lang-zh="高速直道统治力">High-Speed Edge</span>
+                    </div>
+                    <h4 class="text-xl font-oswald font-black text-white" data-lang-en="BELGIAN GP (SPA)" data-lang-zh="比利时斯帕站">BELGIAN GP (SPA)</h4>
+                    <p class="text-xs text-rbrGray" data-lang-en="Verstappen won from P6 grid penalty" data-lang-zh="维斯塔潘罚退第6起步，摧枯拉朽逆袭">Verstappen won from P6 grid penalty</p>
+                </button>
+
+                <!-- 摩纳哥 -->
+                <button onclick="switchRace('monaco')" id="race-tab-monaco" class="p-5 rounded-2xl border border-rbrLightBlue bg-rbrNavy hover:border-rbrYellow/40 text-left transition-all duration-300">
+                    <div class="flex justify-between items-center mb-2">
+                        <span class="bg-rbrLightBlue text-white px-2 py-0.5 rounded text-[10px] font-bold font-space">ROUND 6</span>
+                        <span class="text-xs text-yellow-400 font-bold" data-lang-en="Wet Dynamic Control" data-lang-zh="湿地极限控车">Wet Dynamic Control</span>
+                    </div>
+                    <h4 class="text-xl font-oswald font-black text-white" data-lang-en="MONACO GP" data-lang-zh="摩纳哥大奖赛">MONACO GP</h4>
+                    <p class="text-xs text-rbrGray" data-lang-en="Rain tarmac wall-brushing win" data-lang-zh="雨战零失误刷墙夺冠，保胎大师">Rain tarmac wall-brushing win</p>
+                </button>
+
+                <!-- 新加坡 -->
+                <button onclick="switchRace('singapore')" id="race-tab-singapore" class="p-5 rounded-2xl border border-rbrLightBlue bg-rbrNavy hover:border-rbrYellow/40 text-left transition-all duration-300">
+                    <div class="flex justify-between items-center mb-2">
+                        <span class="bg-rbrLightBlue text-white px-2 py-0.5 rounded text-[10px] font-bold font-space">ROUND 15</span>
+                        <span class="text-xs text-rbrRed font-bold" data-lang-en="The Achilles' Heel" data-lang-zh="阿喀琉斯之踵">The Achilles' Heel</span>
+                    </div>
+                    <h4 class="text-xl font-oswald font-black text-white" data-lang-en="SINGAPORE GP" data-lang-zh="新加坡大奖赛">SINGAPORE GP</h4>
+                    <p class="text-xs text-rbrGray" data-lang-en="The only race Red Bull didn't win" data-lang-zh="底盘硬伤滑铁卢，颠簸路肩痛点">The only race Red Bull didn't win</p>
+                </button>
+            </div>
+
+            <!-- 数据监测舱 -->
+            <div class="grid grid-cols-1 lg:grid-cols-12 gap-8">
+                <!-- 左半：波形图交互 -->
+                <div class="lg:col-span-7 bg-rbrNavy border border-rbrLightBlue rounded-2xl p-6 flex flex-col justify-between">
+                    <div>
+                        <div class="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-2 mb-4">
+                            <div>
+                                <h3 class="text-xl font-oswald font-bold" id="telemetry-chart-title">Spa Telemetry Profiler</h3>
+                                <p class="text-xs text-rbrGray" data-lang-en="Instantly toggle telemetry channels down below:" data-lang-zh="实时遥测单圈波形，点击下方按钮切换遥测物理量：">Instantly toggle telemetry channels down below:</p>
+                            </div>
+                            <!-- 物理量通道 -->
+                            <div class="flex space-x-2 text-xs">
+                                <button onclick="toggleTelemetry('speed')" id="btn-tel-speed" class="px-3 py-1.5 rounded bg-rbrYellow text-rbrNavy font-bold" data-lang-en="Speed" data-lang-zh="车速 (Speed)">Speed</button>
+                                <button onclick="toggleTelemetry('throttle')" id="btn-tel-throttle" class="px-3 py-1.5 rounded border border-rbrLightBlue text-white hover:border-rbrYellow" data-lang-en="Throttle" data-lang-zh="油门 (Throttle)">Throttle</button>
+                                <button onclick="toggleTelemetry('brake')" id="btn-tel-brake" class="px-3 py-1.5 rounded border border-rbrLightBlue text-white hover:border-rbrYellow" data-lang-en="Brake" data-lang-zh="刹车 (Brake)">Brake</button>
+                            </div>
+                        </div>
+
+                        <!-- 遥测曲线 -->
+                        <div class="bg-rbrBlue/50 rounded-xl p-4 border border-rbrLightBlue/40 h-64 flex items-center justify-center relative">
+                            <svg viewBox="0 0 500 200" class="w-full h-full" id="telemetry-svg">
+                                <g stroke="#122544" stroke-width="0.5">
+                                    <line x1="0" y1="50" x2="500" y2="50" />
+                                    <line x1="0" y1="100" x2="500" y2="100" />
+                                    <line x1="0" y1="150" x2="500" y2="150" />
+                                    <line x1="125" y1="0" x2="125" y2="200" />
+                                    <line x1="250" y1="0" x2="250" y2="200" />
+                                    <line x1="375" y1="0" x2="375" y2="200" />
+                                </g>
+                                <path id="telemetry-path" d="M 0 100 Q 125 20, 250 150 T 500 40" fill="none" stroke="#FFEC00" stroke-width="3" class="transition-all duration-700"/>
+                                
+                                <text x="10" y="45" fill="#475569" font-size="8">MAX PEAK</text>
+                                <text x="10" y="145" fill="#475569" font-size="8">MIN VALUES</text>
+                            </svg>
+                        </div>
+                    </div>
+
+                    <div class="mt-6 p-4 bg-rbrBlue border-l-4 border-rbrYellow rounded-r-lg">
+                        <span class="text-xs uppercase font-bold text-rbrYellow block" data-lang-en="Telemetry Insight Room" data-lang-zh="工程师战术点评">Telemetry Insight Room</span>
+                        <p class="text-xs text-white mt-1 leading-relaxed" id="race-strategy-insight">
+                            The extreme floor sealing and low drag profile of the RB19 allowed Max to go full throttle earlier in exit phases without rear axle slide.
+                        </p>
+                    </div>
+                </div>
+
+                <!-- 右半：轮胎配比与赛道形状 -->
+                <div class="lg:col-span-5 bg-rbrNavy border border-rbrLightBlue rounded-2xl p-6 flex flex-col justify-between">
+                    <div class="space-y-6">
+                        <div>
+                            <h3 class="text-xl font-oswald font-bold uppercase tracking-wider" data-lang-en="Stint & Compound Strategy" data-lang-zh="正赛一贵换胎策略表">Stint & Compound Strategy</h3>
+                            <p class="text-xs text-rbrGray mt-1" data-lang-en="Detailed compound transition intervals:" data-lang-zh="全场正赛换胎窗口分配细节图解：">Detailed compound transition intervals:</p>
+                        </div>
+
+                        <!-- 轮胎色条 -->
+                        <div class="space-y-4">
+                            <div>
+                                <div class="flex justify-between text-xs font-bold mb-1">
+                                    <span data-lang-en="Red Bull Driver Stint Profile" data-lang-zh="红牛车队换胎周期规划">Red Bull Driver Stint Profile</span>
+                                    <span class="text-rbrYellow" id="stint-count">2 Stop (Soft - Medium - Soft)</span>
+                                </div>
+                                <div id="strategy-bar" class="h-8 w-full bg-slate-800 rounded-lg overflow-hidden flex p-1">
+                                    <div class="h-full bg-rbrRed text-[10px] font-bold text-white flex items-center justify-center rounded-l" style="width: 35%">SOFT (L1-15)</div>
+                                    <div class="h-full bg-rbrYellow text-[10px] font-bold text-rbrNavy flex items-center justify-center" style="width: 40%">MEDIUM (L16-32)</div>
+                                    <div class="h-full bg-rbrRed text-[10px] font-bold text-white flex items-center justify-center rounded-r" style="width: 25%">SOFT (L33-44)</div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- 极速性能列表 -->
+                        <div class="space-y-3 pt-4 border-t border-rbrLightBlue/40 text-sm">
+                            <div class="flex justify-between">
+                                <span class="text-rbrGray" data-lang-en="Avg Pitstop Duration:" data-lang-zh="历史平均进站换胎时间：">Avg Pitstop Duration:</span>
+                                <span class="font-bold text-white font-mono">1.95s (Global Top-tier)</span>
+                            </div>
+                            <div class="flex justify-between">
+                                <span class="text-rbrGray" data-lang-en="Fastest Stint Lap:" data-lang-zh="最快分站单圈圈速：">Fastest Stint Lap:</span>
+                                <span class="font-bold text-white font-mono" id="race-fastest-lap">1:48.919 (Lap 32)</span>
+                            </div>
+                            <div class="flex justify-between">
+                                <span class="text-rbrGray" data-lang-en="Rear Downforce Trim:" data-lang-zh="尾翼下压力阻力比配比：">Rear Downforce Trim:</span>
+                                <span class="font-bold text-rbrYellow" id="race-aero-spec">Low Drag Winglet Stance</span>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- 矢量简图 -->
+                    <div class="mt-6 pt-4 border-t border-rbrLightBlue/40 flex items-center space-x-4">
+                        <div class="w-16 h-16 bg-rbrBlue/50 border border-rbrLightBlue rounded flex items-center justify-center">
+                            <svg id="track-outline-svg" viewBox="0 0 100 100" class="w-12 h-12 text-rbrYellow">
+                                <path id="track-outline-path" d="M10 50 Q30 10 70 20 T90 50 T50 80 Z" stroke="currentColor" stroke-width="4" fill="none" stroke-linecap="round"/>
+                            </svg>
+                        </div>
+                        <div>
+                            <span class="text-xs text-rbrGray uppercase block" data-lang-en="Track Layout Map" data-lang-zh="赛道轮廓结构">Track Layout Map</span>
+                            <span class="font-bold text-sm text-white" id="race-venue-name">Spa-Francorchamps, Belgium</span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- 游戏娱乐：换胎挑战 -->
+    <section id="pitstop" class="py-24 bg-rbrNavy border-b border-rbrLightBlue/40 relative">
+        <div class="max-w-7xl mx-auto px-6">
+            <div class="text-center max-w-3xl mx-auto mb-16">
+                <span class="text-rbrYellow uppercase font-bold tracking-widest text-sm" data-lang-en="INTERACTIVE MINI-GAME" data-lang-zh="极速趣味交互小游戏">INTERACTIVE MINI-GAME</span>
+                <h2 class="text-4xl sm:text-5xl font-oswald font-black uppercase tracking-tight text-white mt-1" data-lang-en="RED BULL PIT CHALLENGE" data-lang-zh="红牛车队 1.82s 换胎挑战">
+                    RED BULL PIT CHALLENGE
+                </h2>
+                <p class="text-rbrGray mt-4" data-lang-en="Time the reaction lights. Hit spacebar or tap when all 5 lights turn off to target sub-2.0 second perfection!" data-lang-zh="红牛保持过 1.82 秒的震撼换胎世界纪录！测试你的神经反射极限。当五盏红灯同时熄灭（Lights Out）的瞬间点击释放风炮！看看你能否冲入两秒大关！">
+                    Time the reaction lights. Hit spacebar or tap when all 5 lights turn off to target sub-2.0 second perfection!
+                </p>
+            </div>
+
+            <div class="max-w-xl mx-auto bg-rbrBlue border border-rbrLightBlue rounded-2xl p-8 text-center relative overflow-hidden">
+                <div class="space-y-8">
+                    <!-- 物理红灯条 -->
+                    <div class="flex justify-center space-x-4" id="pit-light-strip">
+                        <div class="w-8 h-8 rounded-full bg-red-900 border border-black shadow" id="light-1"></div>
+                        <div class="w-8 h-8 rounded-full bg-red-900 border border-black shadow" id="light-2"></div>
+                        <div class="w-8 h-8 rounded-full bg-red-900 border border-black shadow" id="light-3"></div>
+                        <div class="w-8 h-8 rounded-full bg-red-900 border border-black shadow" id="light-4"></div>
+                        <div class="w-8 h-8 rounded-full bg-red-900 border border-black shadow" id="light-5"></div>
+                    </div>
+
+                    <!-- 计时屏幕 -->
+                    <div class="bg-rbrNavy border border-rbrLightBlue/80 py-6 rounded-xl">
+                        <div class="text-xs text-rbrGray uppercase tracking-widest font-mono" data-lang-en="Reaction Stint Time" data-lang-zh="秒表瞬时反应时间">Reaction Stint Time</div>
+                        <div class="text-5xl font-oswald font-black text-rbrYellow mt-2" id="pit-timer">0.00s</div>
+                        <div class="text-xs text-white/70 mt-2 font-mono" id="pit-status-msg" data-lang-en="Click 'Ready to Pit' to start sequence." data-lang-zh="准备就绪后，点击按钮启动五盏发车/换胎红灯。">Click 'Ready to Pit' to start sequence.</div>
+                    </div>
+
+                    <!-- 交互控制器 -->
+                    <div class="flex justify-center space-x-4">
+                        <button onclick="startPitSequence()" id="btn-pit-ready" class="bg-rbrYellow text-rbrNavy font-bold px-6 py-3 rounded-md uppercase tracking-wider hover:bg-white transition" data-lang-en="Ready to Pit" data-lang-zh="呼叫进站 (Ready)">
+                            Ready to Pit
+                        </button>
+                        <button onclick="triggerPitGun()" id="btn-pit-gun" class="bg-rbrRed text-white font-bold px-6 py-3 rounded-md uppercase tracking-wider hover:bg-red-500 transition opacity-50 cursor-not-allowed" disabled data-lang-en="RELEASE GUN" data-lang-zh="松开风炮/释放！">
+                            RELEASE GUN
+                        </button>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- 车手荣誉展台与重磅荷兰主场视频区 -->
+    <section id="driver" class="py-24 bg-gradient-to-t from-rbrNavy to-rbrBlue relative overflow-hidden">
+        <div class="max-w-7xl mx-auto px-6">
+            <div class="grid grid-cols-1 lg:grid-cols-12 gap-12 items-center">
+                
+                <!-- 左半：维斯塔潘车队数据与重磅战役视频 -->
+                <div class="lg:col-span-7 space-y-8">
+                    <div class="space-y-4">
+                        <span class="text-rbrYellow uppercase font-bold tracking-widest text-sm" data-lang-en="HISTORIC 9-CONSECUTIVE GP WINS" data-lang-zh="见证 F1 历史连胜奇迹">HISTORIC 9-CONSECUTIVE GP WINS</span>
+                        <h2 class="text-5xl font-oswald font-black uppercase text-white leading-none">
+                            MAX VERSTAPPEN <span class="text-rbrRed">#1</span>
+                        </h2>
+                        <p class="text-rbrGray text-base leading-relaxed" data-lang-en="The ultimate racing force. In 2023, Verstappen secured an incredible 10-consecutive wins streak, matching Vettel's legendary form, and sealed his status with a 575 WDC point gap." data-lang-zh="2023 赛季，维斯塔潘火力全开，不仅追平并打破了维特尔创造的连续分站赛冠军历史纪录（九连胜后直指十连胜），最终更以 575 的破纪录积分，傲视群雄夺下车手总冠军。">
+                            The ultimate racing force. In 2023, Verstappen secured an incredible 10-consecutive wins streak, matching Vettel's legendary form, and sealed his status with a 575 WDC point gap.
+                        </p>
+                    </div>
+
+                    <!-- 荣耀数据 -->
+                    <div class="grid grid-cols-1 sm:grid-cols-3 gap-4 pt-2">
+                        <div class="bg-rbrNavy p-4 rounded-xl border border-rbrLightBlue">
+                            <span class="text-rbrGray text-xs block uppercase" data-lang-en="2023 Finish" data-lang-zh="年终总积分排名">2023 Finish</span>
+                            <span class="text-2xl font-oswald font-bold text-rbrYellow" data-lang-en="Champion (P1)" data-lang-zh="世界总冠军 (P1)">Champion (P1)</span>
+                        </div>
+                        <div class="bg-rbrNavy p-4 rounded-xl border border-rbrLightBlue">
+                            <span class="text-rbrGray text-xs block uppercase" data-lang-en="Podium Finish Rate" data-lang-zh="登上领奖台比例">Podium Finish Rate</span>
+                            <span class="text-2xl font-oswald font-bold text-white">95.45%</span>
+                        </div>
+                        <div class="bg-rbrNavy p-4 rounded-xl border border-rbrLightBlue">
+                            <span class="text-rbrGray text-xs block uppercase" data-lang-en="Grand Slam Stints" data-lang-zh="分站大满贯次数">Grand Slam Stints</span>
+                            <span class="text-2xl font-oswald font-bold text-rbrRed" data-lang-en="6 Grand Slams" data-lang-zh="6 次分站大满贯">6 Grand Slams</span>
+                        </div>
+                    </div>
+
+                    <!-- ================== 重磅融入：2023 荷兰超神一战视频播放跳转区 ================== -->
+                    <div class="relative overflow-hidden border border-rbrYellow/40 bg-gradient-to-r from-rbrNavy via-rbrLightBlue to-rbrNavy rounded-2xl p-6 shadow-xl transition-all duration-300 hover:border-rbrYellow group">
+                        <div class="absolute -right-16 -bottom-16 w-44 h-44 bg-rbrYellow/10 rounded-full blur-2xl group-hover:bg-rbrYellow/20 transition-all duration-500"></div>
+                        <div class="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4">
+                            <div class="space-y-2">
+                                <div class="inline-flex items-center space-x-2 bg-rbrRed text-white px-2.5 py-0.5 rounded text-[10px] font-bold font-space uppercase">
+                                    <span class="w-1.5 h-1.5 rounded-full bg-white animate-ping"></span>
+                                    <span data-lang-en="Bilibili GP Showcase" data-lang-zh="哔哩哔哩精选推荐">Bilibili GP Showcase</span>
+                                </div>
+                                <h3 class="text-xl font-oswald font-bold text-white group-hover:text-rbrYellow transition" data-lang-en="Dutch GP: The 9th Consecutive Triumph" data-lang-zh="荷兰大奖赛：超神九连胜巅峰战役">
+                                    Dutch GP: The 9th Consecutive Triumph
+                                </h3>
+                                <p class="text-xs text-rbrGray max-w-md" data-lang-en="Watch the breathtaking rain-soaked home race where Verstappen defied extreme pressure to claim 9 consecutive victories." data-lang-zh="重温暴雨洗礼、瞬息万变的赞德沃特主场战役！维斯塔潘顶住红旗中断与轮胎策略博弈的极限阻力，强势斩获历史性九连胜。">
+                                    Watch the breathtaking rain-soaked home race where Verstappen defied extreme pressure to claim 9 consecutive victories.
+                                </p>
+                            </div>
+                            <!-- 播放跳转按钮 -->
+                            <a href="https://b23.tv/tACzQfH" target="_blank" rel="noopener noreferrer" class="flex-shrink-0 bg-rbrYellow hover:bg-white text-rbrNavy font-black py-3 px-5 rounded-lg flex items-center space-x-2 transition-all duration-300 shadow-md transform group-hover:scale-105">
+                                <i data-lucide="play" class="w-5 h-5 fill-rbrNavy stroke-none"></i>
+                                <span data-lang-en="WATCH PLAYBACK" data-lang-zh="立即观看精华">WATCH PLAYBACK</span>
+                            </a>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- 右半：车手海报贴片 -->
+                <div class="lg:col-span-5 relative flex flex-col items-center">
+                    <div class="relative w-full max-w-sm bg-rbrNavy border border-rbrLightBlue p-6 rounded-3xl overflow-hidden shadow-2xl">
+                        <div class="w-full h-64 bg-rbrBlue/50 rounded-2xl flex items-center justify-center relative mb-4">
+                            <svg viewBox="0 0 200 200" fill="none" class="w-44 h-44">
+                                <circle cx="100" cy="100" r="80" fill="#0A1428" stroke="#FFEC00" stroke-width="2"/>
+                                <path d="M50 80 Q100 50 150 80 L140 130 Q100 160 60 130 Z" fill="#1e293b" stroke="#ffffff" stroke-width="2"/>
+                                <path d="M60 90 Q100 75 140 90 L135 110 Q100 100 65 110 Z" fill="#E10600"/>
+                                <text x="100" y="145" fill="#FFEC00" font-family="Oswald" font-weight="black" font-size="16" text-anchor="middle">MAX #1</text>
+                                <path d="M80 50 L90 60 L100 50 L110 60 L120 50 L115 70 L85 70 Z" fill="#FFEC00"/>
+                            </svg>
+                            <span class="absolute top-4 right-4 bg-rbrYellow text-rbrNavy font-bold font-oswald text-xs px-2 py-0.5 rounded tracking-widest animate-pulse-fast">CHAMPION</span>
+                        </div>
+                        <div class="text-center">
+                            <h4 class="text-2xl font-oswald font-black uppercase text-white">MAX VERSTAPPEN</h4>
+                            <p class="text-xs text-rbrYellow font-bold uppercase tracking-widest mt-1">Dutch Speed Lion</p>
+                        </div>
+                    </div>
+                    <p class="text-xs text-rbrGray mt-3 italic text-center">
+                        
+                    </p>
+                </div>
+
+            </div>
+        </div>
+    </section>
+
+    <!-- 页脚 -->
+    <footer class="bg-rbrNavy border-t border-rbrLightBlue/40 py-12">
+        <div class="max-w-7xl mx-auto px-6 grid grid-cols-1 md:grid-cols-3 gap-8 items-center text-center md:text-left">
+            <div>
+                <div class="flex justify-center md:justify-start items-center space-x-1">
+                    <span class="text-rbrRed font-oswald text-xl font-extrabold tracking-tighter">RED BULL</span>
+                    <span class="bg-rbrYellow text-rbrNavy px-1.5 py-0.5 rounded text-xs font-oswald font-black">RB19</span>
+                </div>
+                <p class="text-xs text-rbrGray mt-2" data-lang-en="Dedicated web simulator and fan tribute site for Adrian Newey's 2023 magnum opus." data-lang-zh="向传奇气动大师阿德里安·纽维执笔的 2023 世纪名车 RB19 致敬！本站为车迷交互练习作品。">
+                    Dedicated web simulator and fan tribute site for Adrian Newey's 2023 magnum opus.
+                </p>
+            </div>
+
+            <div class="flex justify-center space-x-6 text-sm text-rbrGray">
+                <a href="#home" class="hover:text-rbrYellow transition">Overview</a>
+                <a href="#livery" class="hover:text-rbrYellow transition">Liveries</a>
+                <a href="#telemetry" class="hover:text-rbrYellow transition">Track Telemetry</a>
+            </div>
+
+            <div class="text-xs text-rbrGray md:text-right">
+                <p>© 2026 Red Bull Racing Champion Tribute Project</p>
+                <p class="mt-1" data-lang-en="Unofficial tribute platform for training" data-lang-zh="非官方致敬平台 · 仅作赛车文化与前端图形技术练习展示">Unofficial tribute platform for training</p>
+            </div>
+        </div>
+    </footer>
+
+    <!-- 粒子、双语、遥测控制 JavaScript 程序舱 -->
+    <script>
+        // ------------------ 1. 高性能 Canvas 粒子系统开发 ------------------
+        const canvas = document.getElementById('ambient-particles');
+        const ctx = canvas.getContext('2d');
+        let particlesArray = [];
+
+        // 默认经典红黄粒子色彩映射
+        let activeColors = ['#FFEC00', '#E10600', '#122544'];
+
+        function resizeCanvas() {
+            canvas.width = window.innerWidth;
+            canvas.height = window.innerHeight;
+        }
+        window.addEventListener('resize', resizeCanvas);
+        resizeCanvas();
+
+        class Particle {
+            constructor() {
+                this.x = Math.random() * canvas.width;
+                this.y = Math.random() * canvas.height;
+                this.size = Math.random() * 3 + 1;
+                this.speedX = (Math.random() - 0.5) * 1.2;
+                this.speedY = -Math.random() * 1.5 - 0.2;
+                this.color = activeColors[Math.floor(Math.random() * activeColors.length)];
+                this.alpha = Math.random() * 0.5 + 0.3;
+                this.decay = Math.random() * 0.005 + 0.002;
+            }
+            update() {
+                this.x += this.speedX;
+                this.y += this.speedY;
+                this.alpha -= this.decay;
+                
+                if (this.y < 0 || this.alpha <= 0) {
+                    this.y = canvas.height + 10;
+                    this.x = Math.random() * canvas.width;
+                    this.alpha = Math.random() * 0.5 + 0.3;
+                    this.color = activeColors[Math.floor(Math.random() * activeColors.length)];
+                }
+            }
+            draw() {
+                ctx.save();
+                ctx.globalAlpha = this.alpha;
+                ctx.shadowBlur = 10;
+                ctx.shadowColor = this.color;
+                ctx.fillStyle = this.color;
+                ctx.beginPath();
+                ctx.arc(this.x, this.y, this.size, 0, Math.PI * 2);
+                ctx.fill();
+                ctx.restore();
+            }
+        }
+
+        function initParticles() {
+            particlesArray = [];
+            const numberOfParticles = Math.min(60, Math.floor(window.innerWidth / 20));
+            for (let i = 0; i < numberOfParticles; i++) {
+                particlesArray.push(new Particle());
+            }
+        }
+
+        function animateParticles() {
+            ctx.clearRect(0, 0, canvas.width, canvas.height);
+            for (let i = 0; i < particlesArray.length; i++) {
+                particlesArray[i].update();
+                particlesArray[i].draw();
+            }
+            requestAnimationFrame(animateParticles);
+        }
+
+        initParticles();
+        animateParticles();
+
+
+        // ------------------ 2. 双语切换系统开发 (EN/CN) ------------------
+        let currentLang = 'EN';
+        
+        function toggleLanguage() {
+            currentLang = currentLang === 'EN' ? 'ZH' : 'EN';
+            document.getElementById('lang-indicator').innerText = currentLang === 'EN' ? 'ZH' : 'EN';
+
+            const elements = document.querySelectorAll('[data-lang-en]');
+            elements.forEach(el => {
+                const enText = el.getAttribute('data-lang-en');
+                const zhText = el.getAttribute('data-lang-zh');
+                el.innerText = currentLang === 'EN' ? enText : zhText;
+            });
+        }
+
+
+        // ------------------ 3. 涂装切换数据模型 ------------------
+        const liveryData = {
+            classic: {
+                tag: "STANDARD SEASON LIVERY",
+                title: "Matte Night Navy & Yellow Stanza",
+                desc: "The timeless racing matte dark navy blue overlaid with aggressive scarlet racing stripes. Perfectly designed to mitigate night reflection under stadium floodlights.",
+                palette: ["#0C1E3E", "#FFEC00", "#E10600"],
+                glow: "rgba(255, 236, 0, 0.12)",
+                specType: "Standard Aero Pods",
+                debut: "Bahrain GP Launch",
+                wins: "19 GP Victories",
+                weight: "0g Standard Matte",
+                bgText: "CLASSIC",
+                bodyColor: "#0C1E3E",
+                rearWingColor: "#E10600",
+                frontWingColor: "#0A1428",
+                wingText: "HONDA",
+                swooshColor: "#E10600",
+                swooshColor2: "#FFEC00",
+                tyreColor: "#FFEC00",
+                refLabel: "Standard Matte Night Navy Configuration (2023 Champion Formula)",
+                particleColors: ['#FFEC00', '#E10600', '#122544']
+            },
+            white: {
+                tag: "HONDA APPRECIATION SPECIAL",
+                title: "White 'Arigato' Tribute Champion Edition",
+                desc: "Replicating the legendary white-red racing livery shown in Image 1. Bold, clean racing white chassis, deep crimson red accents, and black endplates celebrating Japanese championship engineering legacy.",
+                palette: ["#FFFFFF", "#E10600", "#111827"],
+                glow: "rgba(255, 255, 255, 0.15)",
+                specType: "Suzuka Tribute Spec",
+                debut: "Turkish GP (Image 1)",
+                wins: "Honda Legacy Sweep",
+                weight: "+85g Ultra-Thin Vinyl",
+                bgText: "ARIGATO",
+                bodyColor: "#FFFFFF",
+                rearWingColor: "#111827",
+                frontWingColor: "#FFFFFF",
+                wingText: "HONDA",
+                swooshColor: "#E10600",
+                swooshColor2: "#E10600",
+                tyreColor: "#E10600",
+                refLabel: "White Honda Appreciation Stance - Clean & Historic (Image 1)",
+                particleColors: ['#FFFFFF', '#E10600', '#374151']
+            },
+            miami: {
+                tag: "MIAMI GP SPECIAL EDITION",
+                title: "Miami Vice Neon Teal & Pink Waves",
+                desc: "Direct replication of the uploaded Miami setup (Image 2). Stunning fluorescent pink and turquoise teal waves cascading along the sidepods, capturing the legendary sunset ocean vibes.",
+                palette: ["#0C1E3E", "#00f2fe", "#f35588"],
+                glow: "rgba(0, 242, 254, 0.18)",
+                specType: "Street Flow Stint",
+                debut: "Miami Grand Prix (Image 2)",
+                wins: "Max P9 to P1 Epic Win",
+                weight: "+90g Thermo Wrap",
+                bgText: "MIAMI",
+                bodyColor: "#0C1E3E",
+                rearWingColor: "#f35588",
+                frontWingColor: "#00f2fe",
+                wingText: "MIAMI",
+                swooshColor: "#00f2fe",
+                swooshColor2: "#f35588",
+                tyreColor: "#00f2fe",
+                refLabel: "Miami Beach Ocean Neon Pink/Teal configuration (Image 2)",
+                particleColors: ['#00f2fe', '#f35588', '#0C1E3E']
+            },
+            vegas: {
+                tag: "LAS VEGAS GP SPECIAL",
+                title: "Vegas Purple Neon Midnight Suite",
+                desc: "Inspired directly by the uploaded Las Vegas street fighter model (Image 3). Looking spectacular with glowing playing card suit silhouettes overlaid across the carbon body panels.",
+                palette: ["#4c1d95", "#090514", "#FFEC00"],
+                glow: "rgba(177, 0, 232, 0.22)",
+                specType: "Vegas Strip Downforce",
+                debut: "Vegas Grand Prix (Image 3)",
+                wins: "1 Dramatic Vegas Sweep",
+                weight: "+95g Fluorescent",
+                bgText: "VEGAS",
+                bodyColor: "#3b0764",
+                rearWingColor: "#090514",
+                frontWingColor: "#FFEC00",
+                wingText: "VEGAS",
+                swooshColor: "#FFEC00",
+                swooshColor2: "#e879f9",
+                tyreColor: "#ffffff",
+                refLabel: "Vegas Nightlife Casino Neon Purple config (Image 3)",
+                particleColors: ['#b100e8', '#e879f9', '#FFEC00']
+            }
+        };
+
+        function switchLivery(key) {
+            const data = liveryData[key];
+            if (!data) return;
+
+            const buttons = ['classic', 'white', 'miami', 'vegas'];
+            buttons.forEach(btnKey => {
+                const btn = document.getElementById(`btn-${btnKey}`);
+                if (btnKey === key) {
+                    btn.classList.remove('bg-rbrNavy/40', 'border-rbrLightBlue');
+                    btn.classList.add('bg-rbrNavy/80', 'border-rbrYellow');
+                } else {
+                    btn.classList.remove('bg-rbrNavy/80', 'border-rbrYellow');
+                    btn.classList.add('bg-rbrNavy/40', 'border-rbrLightBlue');
+                }
+            });
+
+            document.getElementById('livery-tag').innerText = data.tag;
+            document.getElementById('livery-title').innerText = data.title;
+            document.getElementById('livery-desc').innerText = data.desc;
+            document.getElementById('giant-bg-text').innerText = data.bgText;
+
+            document.getElementById('livery-spec-type').innerText = data.specType;
+            document.getElementById('livery-spec-debut').innerText = data.debut;
+            document.getElementById('livery-spec-wins').innerText = data.wins;
+            document.getElementById('livery-spec-points').innerText = data.weight;
+            document.getElementById('prototype-comparison-label').innerText = data.refLabel;
+
+            activeColors = data.particleColors;
+            initParticles();
+
+            document.getElementById('livery-glow-bg').style.backgroundColor = data.glow;
+
+            document.getElementById('svg-body-shell').setAttribute('fill', data.bodyColor);
+            document.getElementById('svg-rear-wing-main').setAttribute('fill', data.rearWingColor);
+            document.getElementById('svg-front-wing-main').setAttribute('fill', data.frontWingColor);
+            document.getElementById('svg-front-wing-tip').setAttribute('fill', data.rearWingColor);
+            document.getElementById('svg-rear-wing-text').textContent = data.wingText;
+            document.getElementById('svg-accent-swoosh').setAttribute('fill', data.swooshColor);
+            document.getElementById('svg-accent-swoosh-2').setAttribute('fill', data.swooshColor2);
+            document.getElementById('svg-rear-compound').setAttribute('stroke', data.tyreColor);
+            document.getElementById('svg-front-compound').setAttribute('stroke', data.tyreColor);
+
+            const paletteEl = document.getElementById('livery-color-palette');
+            paletteEl.innerHTML = '';
+            data.palette.forEach(color => {
+                const dot = document.createElement('span');
+                dot.className = "w-6 h-6 rounded-full border border-white/20";
+                dot.style.backgroundColor = color;
+                paletteEl.appendChild(dot);
+            });
+        }
+
+
+        // ------------------ 4. 遥测与策略控制数据库 ------------------
+        const raceData = {
+            spa: {
+                title: "Spa-Francorchamps Telemetry",
+                venue: "Spa-Francorchamps, Belgium",
+                fastestLap: "1:48.919 (Lap 32 - Verstappen)",
+                aeroSpec: "Low Drag Scoop Configuration",
+                insight: "Belgium's high-speed sector 1 demands drag elimination. Adrian Newey designed a unique floor-tunnel sealing that maintains zero boundary-layer stall under DRS.",
+                trackPath: "M10 50 Q30 10 70 20 T90 50 T50 80 Z",
+                stintText: "2 Stop (Soft - Medium - Soft)",
+                strategyHtml: `
+                    <div class="h-full bg-rbrRed text-[10px] font-bold text-white flex items-center justify-center rounded-l" style="width: 35%">SOFT (L1-15)</div>
+                    <div class="h-full bg-rbrYellow text-[10px] font-bold text-rbrNavy flex items-center justify-center" style="width: 40%">MEDIUM (L16-32)</div>
+                    <div class="h-full bg-rbrRed text-[10px] font-bold text-white flex items-center justify-center rounded-r" style="width: 25%">SOFT (L33-44)</div>
+                `,
+                telemetryCurve: {
+                    speed: "M 0 100 Q 125 10, 250 180 T 500 20",
+                    throttle: "M 0 150 Q 125 30, 250 120 T 500 10",
+                    brake: "M 0 190 Q 125 180, 250 10 T 500 180"
+                }
+            },
+            monaco: {
+                title: "Monte Carlo Street Telemetry",
+                venue: "Monte Carlo Street GP, Monaco",
+                fastestLap: "1:15.650 (Lap 30 - Verstappen)",
+                aeroSpec: "Street High Downforce Panel",
+                insight: "Wet rain conditions mid-race. Dynamic high-downforce floor design allowed Max to run closer to concrete barriers while holding aggressive steering angles.",
+                trackPath: "M20 20 Q80 20 80 80 T20 80 Z",
+                stintText: "1 Stop (Medium - Intermediate Wet)",
+                strategyHtml: `
+                    <div class="h-full bg-rbrYellow text-[10px] font-bold text-rbrNavy flex items-center justify-center rounded-l" style="width: 70%">MEDIUM (L1-55)</div>
+                    <div class="h-full bg-green-500 text-[10px] font-bold text-white flex items-center justify-center rounded-r" style="width: 30%">INTERMEDIATE WET (L56-78)</div>
+                `,
+                telemetryCurve: {
+                    speed: "M 0 120 Q 120 80, 240 160 T 500 130",
+                    throttle: "M 0 160 Q 120 100, 240 180 T 500 150",
+                    brake: "M 0 180 Q 120 40, 240 190 T 500 80"
+                }
+            },
+            singapore: {
+                title: "Singapore Struggle Profiles",
+                venue: "Marina Bay Street Circuit, Singapore",
+                fastestLap: "1:38.275 (Lap 55 - Verstappen)",
+                aeroSpec: "Elevated Ride-Height Stance",
+                insight: "Bumpy street tarmac forced raising the RB19 floor height by 10mm, severely disrupting the underfloor vortex seal and resulting in push-understeer.",
+                trackPath: "M10 10 L90 10 L90 90 L50 90 L10 50 Z",
+                stintText: "1 Stop (Hard - Medium)",
+                strategyHtml: `
+                    <div class="h-full bg-slate-300 text-[10px] font-bold text-rbrNavy flex items-center justify-center rounded-l" style="width: 60%">HARD (L1-40)</div>
+                    <div class="h-full bg-rbrYellow text-[10px] font-bold text-rbrNavy flex items-center justify-center rounded-r" style="width: 40%">MEDIUM (L41-62)</div>
+                `,
+                telemetryCurve: {
+                    speed: "M 0 140 Q 125 110, 250 170 T 500 120",
+                    throttle: "M 0 180 Q 125 140, 250 190 T 500 130",
+                    brake: "M 0 150 Q 125 50, 250 160 T 500 60"
+                }
+            }
+        };
+
+        let activeRaceKey = 'spa';
+        let activeChannel = 'speed';
+
+        function switchRace(key) {
+            activeRaceKey = key;
+            const data = raceData[key];
+            if (!data) return;
+
+            const tabs = ['spa', 'monaco', 'singapore'];
+            tabs.forEach(tabKey => {
+                const tab = document.getElementById(`race-tab-${tabKey}`);
+                if (tabKey === key) {
+                    tab.classList.remove('bg-rbrNavy', 'border-rbrLightBlue');
+                    tab.classList.add('bg-rbrBlue', 'border-rbrYellow');
+                } else {
+                    tab.classList.remove('bg-rbrBlue', 'border-rbrYellow');
+                    tab.classList.add('bg-rbrNavy', 'border-rbrLightBlue');
+                }
+            });
+
+            document.getElementById('telemetry-chart-title').innerText = data.title;
+            document.getElementById('race-fastest-lap').innerText = data.fastestLap;
+            document.getElementById('race-aero-spec').innerText = data.aeroSpec;
+            document.getElementById('race-strategy-insight').innerText = data.insight;
+            document.getElementById('stint-count').innerText = data.stintText;
+            document.getElementById('race-venue-name').innerText = data.venue;
+
+            document.getElementById('track-outline-path').setAttribute('d', data.trackPath);
+            document.getElementById('strategy-bar').innerHTML = data.strategyHtml;
+
+            updateTelemetryCurve();
+        }
+
+        function toggleTelemetry(channel) {
+            activeChannel = channel;
+            const channels = ['speed', 'throttle', 'brake'];
+            channels.forEach(ch => {
+                const btn = document.getElementById(`btn-tel-${ch}`);
+                if (ch === channel) {
+                    btn.className = "px-3 py-1.5 rounded bg-rbrYellow text-rbrNavy font-bold";
+                } else {
+                    btn.className = "px-3 py-1.5 rounded border border-rbrLightBlue text-white hover:border-rbrYellow";
+                }
+            });
+
+            updateTelemetryCurve();
+        }
+
+        function updateTelemetryCurve() {
+            const curve = raceData[activeRaceKey].telemetryCurve[activeChannel];
+            const pathEl = document.getElementById('telemetry-path');
+            pathEl.setAttribute('d', curve);
+
+            if (activeChannel === 'speed') {
+                pathEl.setAttribute('stroke', '#FFEC00');
+            } else if (activeChannel === 'throttle') {
+                pathEl.setAttribute('stroke', '#10B981');
+            } else {
+                pathEl.setAttribute('stroke', '#EF4444');
+            }
+        }
+
+
+        // ------------------ 5. 趣味换胎反应时间游戏逻辑 ------------------
+        let pitTimer;
+        let startMoment;
+        let activeGame = false;
+        let lightPhase = 0;
+        let timeoutRef;
+
+        function startPitSequence() {
+            if (activeGame) return;
+            activeGame = true;
+            lightPhase = 0;
+
+            document.getElementById('pit-timer').innerText = "0.00s";
+            document.getElementById('pit-status-msg').innerText = "Warm up those air guns... Lights turning on...";
+            document.getElementById('btn-pit-ready').disabled = true;
+            document.getElementById('btn-pit-ready').classList.add('opacity-50');
+
+            for(let i=1; i<=5; i++) {
+                document.getElementById(`light-${i}`).className = "w-8 h-8 rounded-full bg-red-950 border border-black shadow";
+            }
+
+            lightPhase = 1;
+            runLightsSequence();
+        }
+
+        function runLightsSequence() {
+            if (lightPhase <= 5) {
+                document.getElementById(`light-${lightPhase}`).className = "w-8 h-8 rounded-full bg-red-600 border border-red-500 shadow-lg";
+                lightPhase++;
+                timeoutRef = setTimeout(runLightsSequence, 450);
+            } else {
+                const randDelay = 1000 + Math.random() * 1500;
+                timeoutRef = setTimeout(lightsOutGo, randDelay);
+            }
+        }
+
+        function lightsOutGo() {
+            for(let i=1; i<=5; i++) {
+                document.getElementById(`light-${i}`).className = "w-8 h-8 rounded-full bg-neutral-900 border border-neutral-700 shadow-inner";
+            }
+            document.getElementById('pit-status-msg').innerText = "RELEASE! RELEASE! TIME THE GUNS!";
+            
+            const btnGun = document.getElementById('btn-pit-gun');
+            btnGun.disabled = false;
+            btnGun.classList.remove('opacity-50', 'cursor-not-allowed');
+
+            startMoment = Date.now();
+            pitTimer = setInterval(() => {
+                const diff = ((Date.now() - startMoment) / 1000).toFixed(2);
+                document.getElementById('pit-timer').innerText = `${diff}s`;
+            }, 10);
+        }
+
+        function triggerPitGun() {
+            if (!activeGame) return;
+            clearInterval(pitTimer);
+
+            const reaction = ((Date.now() - startMoment) / 1000).toFixed(3);
+            document.getElementById('pit-timer').innerText = `${reaction}s`;
+
+            const btnGun = document.getElementById('btn-pit-gun');
+            btnGun.disabled = true;
+            btnGun.classList.add('opacity-50', 'cursor-not-allowed');
+
+            const btnReady = document.getElementById('btn-pit-ready');
+            btnReady.disabled = false;
+            btnReady.classList.remove('opacity-50');
+
+            activeGame = false;
+
+            let resultMsg = "";
+            const reactionVal = parseFloat(reaction);
+            if (reactionVal < 0.15) {
+                resultMsg = "🏎️ Champion reflexes! Sub-1.8s! You broke the world record!";
+            } else if (reactionVal < 1.95) {
+                resultMsg = "🔥 Incredible stop! Perfect teamwork match!";
+            } else if (reactionVal < 2.5) {
+                resultMsg = "👍 solid average stop. Space for aerodynamic recovery.";
+            } else {
+                resultMsg = "⚠️ Overcut danger! Practice again to master the pneumatic timing!";
+            }
+            document.getElementById('pit-status-msg').innerText = resultMsg;
+        }
+    </script>
+</body>
+</html>
+
+```
